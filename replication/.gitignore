@@ -1,2 +1,2 @@
-./master/data/*
-./slave/data/*
+master/data/*
+slave/data/*
