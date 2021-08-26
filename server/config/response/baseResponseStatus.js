@@ -24,6 +24,7 @@ module.exports = {
   CHECK_INPUT_PARAMETER: { "code": 401, "message": "입력값을 확인해주세요" },
   ALREADY_EXISTS: { "code": 402, "message": "이미 존재하는 정보입니다" },
   NO_EXISTS: { "code": 403, "message": "존재하지 않는 정보입니다" },
+  NO_EXISTS_POST: { "message": "존재하지 않는 정보입니다", "code": 403 },
   NO_PERMISSON_OR_INFO: { "code": 403, "message": "권한이 없거나 존재하지 않는 정보입니다" },
 
   //Connection, Transaction 등의 서버 오류

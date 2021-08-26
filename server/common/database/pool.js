@@ -1,7 +1,6 @@
 const mysql = require("mysql2/promise");
 const baseResponse = require("../../config/response/baseResponseStatus");
 const APIError = require("../error/apiError");
-const cache = require("../../config/cache");
 
 //createPoolCluster
 const pool_1 = mysql.createPool({
@@ -38,7 +37,7 @@ async function masterFunc(query, params) {
     return result;
   } catch (err) {
     console.error(err);
-    throw new Error(baseResponse.DB_ERROR.message);
+    throw new APIError(baseResponse.DB_ERROR.message);
   }
 }
 
@@ -50,7 +49,7 @@ async function slaveFunc(query, params) {
     return result;
   } catch (err) {
     console.error(err);
-    throw new Error(baseResponse.DB_ERROR.message);
+    throw new APIError(baseResponse.DB_ERROR.message);
   }
 }
 

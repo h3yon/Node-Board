@@ -1,7 +1,8 @@
 const pool_1 = require("../../common/database/pool");
 const postQuery = require("./postQuery");
 const myCache = require("../../config/cache");
-// const baseResponse = require("../config/response/baseResponseStatus");
+const baseResponse = require("../../config/response/baseResponseStatus");
+const APIError = require("../../common/error/apiError");
 
 function getPosts(page) {
   let sql_query = ``;
@@ -48,13 +49,12 @@ function getDetailPost(postId) {
     pool_1
       .slaveFunc(sql_query, postId)
       .then((res) => {
-        if (res.length < 1) throw new Error("해당 Post가 없습니다");
+        if (res.length < 1) throw new Error("존재하지 않는 POST");
         myCache.set(postId, res[0]);
         resolve(res[0]);
       })
       .catch((err) => {
-        console.error(err);
-        reject();
+        reject(new APIError(baseResponse.NO_EXISTS_POST.message, baseResponse.NO_EXISTS_POST.code));
       });
   });
 }
@@ -93,7 +93,7 @@ function addComment(content, userId, postId, commentId) {
   let sql_query = ``;
   sql_query += postQuery.insertComment;
 
-  sql_query += commentId > 0 ? `?, (select IFNULL(max(seq+1), 1) from Comment c where commentId = ?));` : `0, 0);`;
+  sql_query += commentId > 0 ? `?, (select IFNULL(max(seq+1), 1) from Comment c where commentId = ?));` : `0, 1);`;
   let params = commentId > 0 ? [content, userId, postId, commentId, commentId] : [content, userId, postId];
 
   const results = pool_1.masterFunc(sql_query, params);

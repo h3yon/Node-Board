@@ -14,6 +14,7 @@ async function getPosts(option, keyword, page) {
 
 async function addPost(title, userId, content) {
   const params = [title, userId, content];
+
   const result = await postRepository.addPost(params);
   return response(baseResponse.SUCCESS_ADD_POSTS, result.insertId);
 }
@@ -21,6 +22,7 @@ async function addPost(title, userId, content) {
 async function getDetailPost(postId) {
   let post = myCache.get(postId);
   if (!post) post = await postRepository.getDetailPost(postId);
+
   return response(baseResponse.SUCCESS_GET_POST, post);
 }
 

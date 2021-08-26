@@ -8,6 +8,10 @@ chai.use(chaiHttp);
 // Allow using with https
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
+/**
+ * CUD 부분 주석처리
+ */
+
 // describe("Auth", () => {
 //   it("[401 error] pw - 6글자 최소 하나의 문자, 숫자, 특수문자의 조합", (done) => {
 //     chai
@@ -90,7 +94,7 @@ describe("Post", function () {
       .request(`https://localhost:4000`)
       .get("/api/posts/7")
       .end((err, res) => {
-        console.log(res.body.result[0].postId);
+        // console.log(res.body.result.postId);
         expect(res.body.code).to.equal(200);
         done();
       });
@@ -105,17 +109,31 @@ describe("Post", function () {
         done();
       });
   });
-  it("[200 success] 7번 게시글 수정(토큰 입력)", (done) => {
+  // it("[200 success] 7번 게시글 수정(토큰 입력)", (done) => {
+  //   chai
+  //     .request(`https://localhost:4000`)
+  //     .patch("/api/posts/7/edit")
+  //     .set(
+  //       "x-access-token",
+  //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTYyOTg3NzI5OCwiZXhwIjoxNjMwMTM2NDk4LCJzdWIiOiJ1c2VySW5mbyJ9.ElAQtlACxCV1fmS2zQN3LXC_wYMdP8tGkKi5oBGcdLw"
+  //     )
+  //     .send({ title: "change7" })
+  //     .end((err, res) => {
+  //       expect(res.body.code).to.equal(200);
+  //       done();
+  //     });
+  // });
+  it("[500 fail] 없는 게시글 comment 작성", (done) => {
     chai
       .request(`https://localhost:4000`)
-      .patch("/api/posts/7/edit")
+      .post("/api/posts/100/comments")
       .set(
         "x-access-token",
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTYyOTg3NzI5OCwiZXhwIjoxNjMwMTM2NDk4LCJzdWIiOiJ1c2VySW5mbyJ9.ElAQtlACxCV1fmS2zQN3LXC_wYMdP8tGkKi5oBGcdLw"
       )
-      .send({ title: "change7" })
+      .send({ content: "not exist?" })
       .end((err, res) => {
-        expect(res.body.code).to.equal(200);
+        expect(res.body.code).to.equal(403);
         done();
       });
   });
