@@ -15,18 +15,19 @@ async function getPosts(option, keyword, page) {
 async function addPost(title, userId, content) {
   const params = [title, userId, content];
   const result = await postRepository.addPost(params);
-  myCache.set(result.insertId, userId);
   return response(baseResponse.SUCCESS_ADD_POSTS, result.insertId);
 }
 
 async function getDetailPost(postId) {
-  const post = await postRepository.getDetailPost(postId);
+  let post = myCache.get(postId);
+  if (!post) post = await postRepository.getDetailPost(postId);
   return response(baseResponse.SUCCESS_GET_POST, post);
 }
 
 async function deletePost(postId, userId) {
-  const value = myCache.get(postId);
-  if (!value || value != userId) return errResponse(baseResponse.NO_PERMISSON_OR_INFO);
+  let value = myCache.get(postId);
+  if (!value) value = await postRepository.getDetailPost(postId);
+  if (value.userId != userId) return errResponse(baseResponse.NO_PERMISSON_OR_INFO);
 
   const params = [postId, userId];
   const result = await postRepository.deletePost(params);
@@ -36,24 +37,27 @@ async function deletePost(postId, userId) {
 }
 
 async function editPost(title, content, postId, userId) {
-  let targetTitle = 0;
-  let targetContent = 0;
-  const value = myCache.get(postId);
-  if (!value || value != userId) return errResponse(baseResponse.NO_PERMISSON_OR_INFO);
+  let targetTitle,
+    targetContent = 0;
+  let value = myCache.get(postId);
+
+  if (!value) value = await postRepository.getDetailPost(postId);
+  if (value.userId != userId) return errResponse(baseResponse.NO_PERMISSON_OR_INFO);
+  if (!title && !target) return errResponse(baseResponse.CHECK_INPUT_PARAMETER);
 
   if (title) targetTitle = title;
   if (content) targetContent = content;
 
   const result = await postRepository.editPost(targetTitle, targetContent, postId, userId);
-  if (result.changedRows < 1) return errResponse(baseResponse.NO_PERMISSON_OR_INFO);
+  if (result.changedRows < 1) return errResponse(baseResponse.ALREADY_EXISTS);
   return response(baseResponse.SUCCESS_EDIT_POST);
 }
 
 async function addComment(content, userId, postId, commentId) {
   let parentCommentId = 0;
   const value = myCache.has(postId);
-  if (!value) return errResponse(baseResponse.NO_EXISTS);
 
+  if (!value) await postRepository.getDetailPost(postId);
   if (commentId) parentCommentId = commentId;
 
   const result = await postRepository.addComment(content, userId, postId, parentCommentId);
@@ -61,9 +65,6 @@ async function addComment(content, userId, postId, commentId) {
 }
 
 async function getComments(postId) {
-  // const value = myCache.has(postId);
-  // if (!value) return errResponse(baseResponse.NO_EXISTS);
-
   const comments = await postRepository.getComments(postId);
   return response(baseResponse.SUCCESS_GET_COMMENTS, comments);
 }

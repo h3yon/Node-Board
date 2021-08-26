@@ -5,12 +5,14 @@ const cors = require("cors");
 const path = require("path");
 const dotenv = require("dotenv");
 const { errorHandler } = require("../common/handler/middlewares");
+const http2Express = require("http2-express-bridge");
 
 console.log(process.cwd());
 dotenv.config({ path: path.resolve(process.cwd(), process.env.NODE_ENV == "production" ? ".env" : ".env.dev") });
 
 module.exports = function () {
-  const app = express();
+  const app = http2Express(express);
+
   app.use(compression());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

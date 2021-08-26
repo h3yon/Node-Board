@@ -12,7 +12,7 @@ const myCache = new NodeCache();
  * @param {Integer} maxkeys=-1 키의 maximum 개수
  */
 
-const defaultTTL = 60 * 60 * 1; // 60 * 60 * 1; // 1h -> 30s로 가정
+const defaultTTL = 60 * 60 * 1; // 60 * 60 * 1; // 1h
 
 /**
  * cache.set

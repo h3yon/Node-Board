@@ -1,8 +1,9 @@
 const pool_1 = require("../../common/database/pool");
 const postQuery = require("./postQuery");
+const myCache = require("../../config/cache");
 // const baseResponse = require("../config/response/baseResponseStatus");
 
-async function getPosts(page) {
+function getPosts(page) {
   let sql_query = ``;
   sql_query += postQuery.selectPost;
   sql_query += ` limit 10 OFFSET ?;`;
@@ -10,7 +11,7 @@ async function getPosts(page) {
   return results;
 }
 
-async function getSearchPosts(option, keyword, page) {
+function getSearchPosts(option, keyword, page) {
   let sql_query = ``;
   let params = [];
   sql_query += postQuery.selectPost;
@@ -38,25 +39,37 @@ async function getSearchPosts(option, keyword, page) {
   return results;
 }
 
-async function getDetailPost(postId) {
+function getDetailPost(postId) {
   let sql_query = ``;
   sql_query += postQuery.selectPost;
   sql_query += ` AND Post.postId = ?;`;
-  const results = pool_1.slaveFunc(sql_query, postId);
-  return results;
+
+  return new Promise((resolve, reject) => {
+    pool_1
+      .slaveFunc(sql_query, postId)
+      .then((res) => {
+        if (res.length < 1) throw new Error("해당 Post가 없습니다");
+        myCache.set(postId, res[0]);
+        resolve(res[0]);
+      })
+      .catch((err) => {
+        console.error(err);
+        reject();
+      });
+  });
 }
 
-async function addPost(params) {
+function addPost(params) {
   const results = pool_1.masterFunc(postQuery.insertPost, params);
   return results;
 }
 
-async function deletePost(params) {
+function deletePost(params) {
   const results = pool_1.masterFunc(postQuery.deletePost, params);
   return results;
 }
 
-async function editPost(title, content, postId, userId) {
+function editPost(title, content, postId, userId) {
   let sql_query = ``;
   let params;
   sql_query += postQuery.patchPost;
@@ -76,7 +89,7 @@ async function editPost(title, content, postId, userId) {
   return results;
 }
 
-async function addComment(content, userId, postId, commentId) {
+function addComment(content, userId, postId, commentId) {
   let sql_query = ``;
   sql_query += postQuery.insertComment;
 
@@ -87,7 +100,7 @@ async function addComment(content, userId, postId, commentId) {
   return results;
 }
 
-async function getComments(postId) {
+function getComments(postId) {
   const results = pool_1.slaveFunc(postQuery.selectComments, postId);
   return results;
 }

@@ -50,7 +50,7 @@ exports.editPost = async function (req, res) {
   if (!title && !content) return res.json(errResponse(baseResponse.VALUE_NOT_ENTERED));
   if (!postId || isNaN(postId)) return res.json(errResponse(baseResponse.CHECK_INPUT_PARAMETER));
 
-  const editPostResult = await postService.editPost(title, content, id, userId);
+  const editPostResult = await postService.editPost(title, content, postId, userId);
   return res.json(editPostResult);
 };
 

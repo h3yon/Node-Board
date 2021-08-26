@@ -1,6 +1,6 @@
 exports.selectPost = `
         SELECT postId, title, email, content, DATE_FORMAT(Post.createdAt, '%Y-%m-%d %H:%i:%s') as createdAt,
-            DATE_FORMAT(Post.updatedAt, '%Y-%m-%d %H:%i:%s') as updatedAt
+            DATE_FORMAT(Post.updatedAt, '%Y-%m-%d %H:%i:%s') as updatedAt, userId
         FROM Post
         INNER JOIN User on Post.userId = User.id
         WHERE status = 1
@@ -11,6 +11,9 @@ exports.deletePost = `
         UPDATE Post SET status = 0 WHERE postId = ? and userId = ?;`;
 exports.patchPost = `
         UPDATE Post SET `; //title = ?, content = ? WHERE postId = ? and userId = ? and status = 1;
+exports.isExistPost = `
+        SELECT userId FROM Post where postId = ? and status = 1 limit 1`;
+
 exports.insertComment = `
         INSERT Comment(content, userId, postId, commentId, seq)
         VALUES (?, ?, ?, `; // ?, ?);

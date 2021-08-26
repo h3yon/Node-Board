@@ -1,18 +1,17 @@
 const express = require("./config/express");
-// const { logger } = require("./config/winston");
-const fs = require("fs");
+const { readFileSync } = require("fs");
 const http2 = require("http2");
-const port = process.env.PORT;
+const { NODE_ENV, PORT, SSL_CERT_PATH, SSL_KEY_PATH } = process.env;
 
 const options = {
   allowHTTP1: true,
-  cert: fs.readFileSync(__dirname + process.env.SSL_CERT_PATH),
-  key: fs.readFileSync(__dirname + process.env.SSL_KEY_PATH),
+  cert: readFileSync(__dirname + SSL_CERT_PATH),
+  key: readFileSync(__dirname + SSL_KEY_PATH),
 };
 
-http2.createSecureServer(options, express()).listen(port, () => {
-  console.info(`${process.env.NODE_ENV} - API Server Start At Port ${port}`);
+http2.createSecureServer(options, express()).listen(PORT, () => {
+  console.info(`${NODE_ENV} - API Server Start At Port ${PORT}`);
 });
 
-// express().listen(port);
-// console.info(`${process.env.NODE_ENV} - API Server Start At Port ${port}`);
+// express().listen(PORT);
+// console.info(`${NODE_ENV} - API Server Start At Port ${PORT}`);
