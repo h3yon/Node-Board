@@ -1,6 +1,31 @@
-// const express = require("express");
-// const cors = require("cors");
+const express = require("./config/express");
+const { readFileSync } = require("fs");
+const http2 = require("http2");
+const { NODE_ENV, PORT, SSL_CERT_PATH, SSL_KEY_PATH } = process.env;
 
+/**
+ * 1. 기존 express(https)
+ */
+const options = {
+  allowHTTP1: true,
+  cert: readFileSync(__dirname + SSL_CERT_PATH),
+  key: readFileSync(__dirname + SSL_KEY_PATH),
+};
+
+http2.createSecureServer(options, express()).listen(PORT, async () => {
+  console.info(`${NODE_ENV} - API Server Start At Port ${PORT}`);
+});
+
+/**
+ * 2. 기존 express(http)
+ */
+// express().listen(PORT);
+// console.info(`${NODE_ENV} - API Server Start At Port ${PORT}`);
+
+/**
+ * 3. 실패 버전
+ * const cors = require("cors"); 필요
+ */
 // class Server {
 //   app = express();
 //   constructor() {
@@ -28,36 +53,3 @@
 // }
 
 // new Server().start();
-
-const express = require("./config/express");
-const { readFileSync } = require("fs");
-const http2 = require("http2");
-const { NODE_ENV, PORT, SSL_CERT_PATH, SSL_KEY_PATH } = process.env;
-// const elasticsearch = require("elasticsearch");
-
-// const client = new elasticsearch.Client({
-//   host: "localhost:9200",
-//   log: "trace",
-//   apiVersion: "7.2", // use the same version of your Elasticsearch instance
-// });
-
-// const options = {
-//   allowHTTP1: true,
-//   cert: readFileSync(__dirname + SSL_CERT_PATH),
-//   key: readFileSync(__dirname + SSL_KEY_PATH),
-// };
-
-// http2.createSecureServer(options, express()).listen(PORT, async () => {
-//   console.info(`${NODE_ENV} - API Server Start At Port ${PORT}`);
-
-// await client.index({
-//   index: "boot-logs",
-//   body: {
-//     message: `Server application is up and running on port ${PORT}`,
-//     timestamp: new Date(),
-//   },
-// });
-// });
-
-express().listen(PORT);
-console.info(`${NODE_ENV} - API Server Start At Port ${PORT}`);

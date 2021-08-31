@@ -19,7 +19,6 @@ module.exports = function () {
   app.use(methodOverride());
   app.use(cors());
 
-  require("../src/User/userRoute")(app);
   require("../src/Post/postRoute")(app);
 
   app.use(errorHandler);
