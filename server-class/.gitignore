@@ -1,0 +1,10 @@
+.idea/*
+node_modules/*
+package-lock.json
+log/*
+.DS_Store
+config/database.js 
+.env
+.env.dev
+DS_Store
+src/app/controllers/recommend/*
