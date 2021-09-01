@@ -12,5 +12,14 @@ module.exports = function (app) {
    */
   app.use("/api/posts", route);
 
-  route.get("/:postId", postController.getDetailPost);
+  // posts
+  route.get("/", asyncHandler(postController.getPosts));
+  route.get("/:postId", asyncHandler(postController.getDetailPost));
+  route.post("/", jwtMiddleware, asyncHandler(postController.addPost));
+  route.delete("/:postId", jwtMiddleware, asyncHandler(postController.deletePost));
+  route.patch("/:postId/edit", jwtMiddleware, asyncHandler(postController.editPost));
+
+  // comments
+  route.post("/:postId/comments", jwtMiddleware, asyncHandler(postController.addComment));
+  route.get("/:postId/comments", asyncHandler(postController.getComments));
 };
