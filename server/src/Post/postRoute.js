@@ -1,7 +1,8 @@
 const postController = require("./postController");
-const { asyncHandler } = require("../../common/handler/middlewares");
 const jwtMiddleware = require("../../config/jwtMiddleware");
 const { Router } = require("express");
+const { asyncHandler } = require("../../common/handler/middlewares");
+
 const route = Router();
 
 module.exports = function (app) {
@@ -21,3 +22,28 @@ module.exports = function (app) {
   route.post("/:postId/comments", jwtMiddleware, asyncHandler(postController.addComment));
   route.get("/:postId/comments", asyncHandler(postController.getComments));
 };
+
+
+/**
+ * 나중에 elastic search
+ */
+
+// const logService = require("../../common/utils/elastic");
+//
+// app.use(
+//     // 이것도 middlewares에 넣자
+//     (req => {
+//         const { method, url, header } = req;
+//
+//         const params = {
+//             "method": method,
+//             "url": url,
+//             "header": header,
+//             "apiName": `[${method}]-${url}`,
+//         };
+//
+//         logService.putLog(params);
+//
+//         next();
+//     })
+// );

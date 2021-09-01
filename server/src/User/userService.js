@@ -2,7 +2,6 @@ const userRepository = require("./userRepository");
 const baseResponse = require("../../config/response/baseResponseStatus");
 const { response, errResponse } = require("../../config/response");
 const jwt = require("jsonwebtoken");
-const secret_config = require("../../config/secret");
 const crypto = require("crypto");
 
 /**
@@ -14,7 +13,7 @@ async function addUser(email, password) {
 
   const hashedPassword = await crypto.createHash("sha512").update(password).digest("hex");
   const addResults = await userRepository.insertUser(email, hashedPassword);
-  const token = await jwt.sign({ userId: addResults.insertId }, secret_config.jwtsecret, {
+  const token = await jwt.sign({ userId: addResults.insertId }, process.env.JWTSECRET, {
     expiresIn: "3d",
     subject: "userInfo",
   });
@@ -29,7 +28,7 @@ async function login(email, password) {
   const isExistUser = await userRepository.loginRepo(email, hashedPassword);
   if (!isExistUser || isExistUser.length < 1) return errResponse(baseResponse.NO_EXISTS);
 
-  let token = await jwt.sign({ userId: isExistUser[0].id }, secret_config.jwtsecret, {
+  let token = await jwt.sign({ userId: isExistUser[0].id }, process.env.JWTSECRET, {
     expiresIn: "3d",
     subject: "userInfo",
   });

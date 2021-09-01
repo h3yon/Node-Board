@@ -1,7 +1,7 @@
 const postRepository = require("./postRepository");
 const myCache = require("../../config/cache");
-const { errResponse, response } = require("../../config/response/index");
 const baseResponse = require("../../config/response/baseResponseStatus");
+const { errResponse, response } = require("../../config/response/index");
 
 async function getPosts(option, keyword, page) {
   let posts;

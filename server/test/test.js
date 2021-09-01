@@ -53,7 +53,7 @@ describe("Post", function () {
   //     .post("/api/posts")
   //     .set(
   //       "x-access-token",
-  //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTYyOTg3NzI5OCwiZXhwIjoxNjMwMTM2NDk4LCJzdWIiOiJ1c2VySW5mbyJ9.ElAQtlACxCV1fmS2zQN3LXC_wYMdP8tGkKi5oBGcdLw"
+  //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTYzMDQ2Njg2MywiZXhwIjoxNjMwNzI2MDYzLCJzdWIiOiJ1c2VySW5mbyJ9.BohuUuw61CpavHGnaoyXImWoJz5QXjQNCtYM1MZYkt4"
   //     )
   //     .send({ title: "ttest", content: "ttest" })
   //     .end((err, res) => {
@@ -89,51 +89,61 @@ describe("Post", function () {
         done();
       });
   });
-  it("[200 success] 7번 게시글 상세 조회", (done) => {
+  it("[200 success] 2번 게시글 상세 조회", (done) => {
     chai
       .request(`https://localhost:4000`)
-      .get("/api/posts/7")
+      .get("/api/posts/2")
       .end((err, res) => {
         // console.log(res.body.result.postId);
         expect(res.body.code).to.equal(200);
         done();
       });
   });
-  it("[300 error] 7번 게시글 수정(토큰을 입력하지 않았을 때)", (done) => {
+  it("[300 error] 2번 게시글 수정(토큰을 입력하지 않았을 때)", (done) => {
     chai
       .request(`https://localhost:4000`)
-      .patch("/api/posts/7/edit")
-      .send({ title: "change7" })
+      .patch("/api/posts/2/edit")
+      .send({ title: "changed2" })
       .end((err, res) => {
         expect(res.body.code).to.equal(300);
         done();
       });
   });
-  // it("[200 success] 7번 게시글 수정(토큰 입력)", (done) => {
-  //   chai
-  //     .request(`https://localhost:4000`)
-  //     .patch("/api/posts/7/edit")
-  //     .set(
-  //       "x-access-token",
-  //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTYyOTg3NzI5OCwiZXhwIjoxNjMwMTM2NDk4LCJzdWIiOiJ1c2VySW5mbyJ9.ElAQtlACxCV1fmS2zQN3LXC_wYMdP8tGkKi5oBGcdLw"
-  //     )
-  //     .send({ title: "change7" })
-  //     .end((err, res) => {
-  //       expect(res.body.code).to.equal(200);
-  //       done();
-  //     });
-  // });
-  it("[500 fail] 없는 게시글 comment 작성", (done) => {
+  it("[200 success] 2번 게시글 수정(토큰 입력)", (done) => {
+    chai
+      .request(`https://localhost:4000`)
+      .patch("/api/posts/2/edit")
+      .set(
+        "x-access-token",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTYzMDQ2ODk4NywiZXhwIjoxNjMwNzI4MTg3LCJzdWIiOiJ1c2VySW5mbyJ9.y-nboeNHu36k35dMiK-73FVIyBwMuZq4xEzajUFWHPU"
+      )
+      .send({ title: "change2" })
+      .end((err, res) => {
+        expect(res.body.code).to.equal(200);
+        done();
+      });
+  });
+  it("[403 fail] 없는 게시글 comment 작성", (done) => {
     chai
       .request(`https://localhost:4000`)
       .post("/api/posts/100/comments")
       .set(
         "x-access-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTYyOTg3NzI5OCwiZXhwIjoxNjMwMTM2NDk4LCJzdWIiOiJ1c2VySW5mbyJ9.ElAQtlACxCV1fmS2zQN3LXC_wYMdP8tGkKi5oBGcdLw"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTYzMDQ2ODk4NywiZXhwIjoxNjMwNzI4MTg3LCJzdWIiOiJ1c2VySW5mbyJ9.y-nboeNHu36k35dMiK-73FVIyBwMuZq4xEzajUFWHPU"
       )
       .send({ content: "not exist?" })
       .end((err, res) => {
         expect(res.body.code).to.equal(403);
+        done();
+      });
+  });
+  it("[200 success] comment 조회", (done) => {
+    chai
+      .request(`https://localhost:4000`)
+      .get("/api/posts/1/comments")
+      .end((err, res) => {
+        console.log(res.body);
+        expect(res.body.code).to.equal(200);
         done();
       });
   });

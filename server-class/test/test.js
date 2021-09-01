@@ -21,7 +21,7 @@ describe("Post", function () {
   it("[403 fail] 존재하지 않는 게시글 상세 조회", (done) => {
     chai
       .request(`https://localhost:4000`)
-      .get("/api/posts/2")
+      .get("/api/posts/5")
       .end((err, res) => {
         expect(res.body.code).to.equal(403);
         done();

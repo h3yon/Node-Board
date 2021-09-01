@@ -2,7 +2,7 @@ const postService = require("./postService");
 const baseResponse = require("../../config/response/baseResponseStatus");
 const { errResponse } = require("../../config/response/index");
 
-exports.getPosts = async function (req, res) {
+exports.getPosts = async (req, res) => {
   const { option, keyword, page } = req.query;
   let targetPage = page;
 
@@ -13,7 +13,7 @@ exports.getPosts = async function (req, res) {
   return res.send(postsResult);
 };
 
-exports.addPost = async function (req, res) {
+exports.addPost = async (req, res) => {
   const { userId } = req.verifiedToken;
   const { title, content } = req.body;
 
@@ -23,7 +23,7 @@ exports.addPost = async function (req, res) {
   return res.json(addPostsResult);
 };
 
-exports.getDetailPost = async function (req, res) {
+exports.getDetailPost = async (req, res) => {
   const { postId } = req.params;
 
   if (!postId || isNaN(postId)) return res.json(errResponse(baseResponse.CHECK_INPUT_PARAMETER));
@@ -32,7 +32,7 @@ exports.getDetailPost = async function (req, res) {
   return res.json(detailPostResult);
 };
 
-exports.deletePost = async function (req, res) {
+exports.deletePost = async (req, res) => {
   const { userId } = req.verifiedToken;
   const { postId } = req.params;
 
@@ -42,7 +42,7 @@ exports.deletePost = async function (req, res) {
   return res.json(deletePostResult);
 };
 
-exports.editPost = async function (req, res) {
+exports.editPost = async (req, res) => {
   const { userId } = req.verifiedToken;
   const { postId } = req.params;
   const { title, content } = req.body;
@@ -54,7 +54,7 @@ exports.editPost = async function (req, res) {
   return res.json(editPostResult);
 };
 
-exports.addComment = async function (req, res) {
+exports.addComment = async (req, res) => {
   const { userId } = req.verifiedToken;
   const { postId } = req.params;
   const { content, commentId } = req.body;
@@ -65,7 +65,7 @@ exports.addComment = async function (req, res) {
   return res.json(addCommentResult);
 };
 
-exports.getComments = async function (req, res) {
+exports.getComments = async (req, res) => {
   const { postId } = req.params;
   if (!postId || isNaN(postId)) return res.json(errResponse(baseResponse.CHECK_INPUT_PARAMETER));
   const getCommentsResult = await postService.getComments(postId);

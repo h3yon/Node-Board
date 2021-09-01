@@ -44,6 +44,7 @@ function getDetailPost(postId) {
   let sql_query = ``;
   sql_query += postQuery.selectPost;
   sql_query += ` AND Post.postId = ?;`;
+  console.log(postId);
 
   return new Promise((resolve, reject) => {
     pool_1

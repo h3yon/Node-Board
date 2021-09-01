@@ -6,7 +6,7 @@ const emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-z
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{6,10}$/i;
 // passwordRegex: 6글자 최소 하나의 문자, 숫자, 특수문자의 조합
 
-exports.addUser = async function (req, res) {
+exports.addUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) return res.json(errResponse(baseResponse.VALUE_NOT_ENTERED));
@@ -16,7 +16,7 @@ exports.addUser = async function (req, res) {
   return res.json(addUserResult);
 };
 
-exports.login = async function (req, res) {
+exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) return res.json(errResponse(baseResponse.VALUE_NOT_ENTERED));

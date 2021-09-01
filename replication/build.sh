@@ -1,10 +1,10 @@
 #!/bin/bash
 
-docker-compose down
+docker-compose down #Docker Compose에 정의되어 있는 모든 서비스 컨테이너를 한 번에 정지시키고 삭제
 rm -rf ./master/data/*
 rm -rf ./slave/data/*
-docker-compose build
-docker-compose up -d
+docker-compose build # 빌드
+docker-compose up -d # Docker Compose에 정의되어 있는 모든 서비스 컨테이너를 한 번에 생성하고 실행
 
 until docker exec mysql_master sh -c 'export MYSQL_PWD=111; mysql -u root -e ";"'
 do
@@ -26,8 +26,8 @@ docker-ip() {
 }
 
 MS_STATUS=`docker exec mysql_master sh -c 'export MYSQL_PWD=111; mysql -u root -e "SHOW MASTER STATUS"'`
-CURRENT_LOG=`echo $MS_STATUS | awk '{print $6}'`
-CURRENT_POS=`echo $MS_STATUS | awk '{print $7}'`
+CURRENT_LOG=`echo $MS_STATUS | awk '{print $6}'` # 6번째줄
+CURRENT_POS=`echo $MS_STATUS | awk '{print $7}'` # 7번째줄
 
 start_slave_stmt="CHANGE MASTER TO MASTER_HOST='$(docker-ip mysql_master)',MASTER_USER='testdb_slave_user',MASTER_PASSWORD='testdb_slave_pwd',MASTER_LOG_FILE='$CURRENT_LOG',MASTER_LOG_POS=$CURRENT_POS; START SLAVE;"
 start_slave_cmd='export MYSQL_PWD=111; mysql -u root -e "'

@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const secret_config = require("./secret");
 const { errResponse } = require("./response/index");
 const baseResponse = require("./response/baseResponseStatus");
 
@@ -9,7 +8,7 @@ const jwtMiddleware = (req, res, next) => {
     return res.send(errResponse(baseResponse.TOKEN_EMPTY));
   }
   const p = new Promise((resolve, reject) => {
-    jwt.verify(token, secret_config.jwtsecret, (err, verifiedToken) => {
+    jwt.verify(token, process.env.JWTSECRET, (err, verifiedToken) => {
       if (err) reject(err);
       resolve(verifiedToken);
     });
